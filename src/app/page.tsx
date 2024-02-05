@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // for successful login, use the user object:
 // {
@@ -21,7 +21,9 @@ export default function LoginScreen() {
 
   const [errMessage, setErrMessage] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('prokeep-login') ? true : false)
+  const [isLoggedIn, setIsLoggedIn] = useState(typeof window !== 'undefined' && window.localStorage.getItem('prokeep-login') ? true : false)
+
+  const [isClient, setIsClient] = useState(false)
 
   const passwordError = password.length < 1;
   const emailError = !validRegex.test(email)
@@ -63,6 +65,15 @@ export default function LoginScreen() {
   const handleLogout = () => {
     localStorage.removeItem('prokeep-login')
     setIsLoggedIn(false)
+  }
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    // make sure it runs on client only
+    return null
   }
 
   if (isLoggedIn) {
